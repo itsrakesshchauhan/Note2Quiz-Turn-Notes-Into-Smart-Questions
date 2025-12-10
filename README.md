@@ -1,63 +1,76 @@
-# Note2Quiz-Turn-Notes-Into-Smart-Questions
-Note2Quiz is an AI-powered learning platform designed for college students and teachers. It helps users transform lecture notes, PDFs, and study materials into high-quality practice questions and quizzes, making exam preparation faster and more effective.
+# Note2Quiz – Turn Notes Into Smart Questions ✨
 
-🎯 Problem Statement
+Note2Quiz is an AI-powered learning platform for **college students and teachers**.  
+Upload lecture notes, PDFs, or study material and instantly generate **exam-style questions and quizzes** to make preparation faster and more effective.
 
-Students struggle to identify important questions from bulky notes.
+> 🚀 Built using **Flask**, **Google Gemini** and a simple JSON-based data layer (no database setup required).
 
-Teachers spend excessive time creating quizzes, question papers, and assignments.
+---
 
-There is no unified platform where:
+## 🧠 What Problem Does It Solve?
 
-Teachers can share notes
+- Students struggle to **figure out important questions** from long notes.
+- Teachers spend a lot of time **manually creating quizzes, question papers, and assignments**.
+- There is no simple platform where:
+  - Teachers can upload and share course content.
+  - Students can **practice auto-generated, syllabus-based questions** anytime.
 
-Students can practice auto-generated, syllabus-based questions
+**Note2Quiz** bridges this gap by turning raw notes into structured practice material.
 
-✅ Solution
+---
 
-Note2Quiz bridges this gap by allowing:
+## 💡 Core Features
 
-📄 Students to upload their own notes and generate practice quizzes.
+### 👨‍🎓 For Students
 
-👨‍🏫 Teachers to upload course materials and auto-create question banks.
+- Upload notes (**PDF / text**).
+- Auto-generate:
+  - ✅ Multiple Choice Questions (MCQs)  
+  - ✅ Short answer questions  
+  - ✅ Long answer / theory questions  
+- Practice in **quiz mode** (with timer support in UI logic).
+- Generate **unlimited question sets** from the same notes.
+- Use teacher-uploaded course materials for self-study.
 
-🧠 AI-driven generation of MCQs, short answers, and long-answer questions.
+---
 
-✨ Key Features
-👨‍🎓 For Students
+### 👩‍🏫 For Teachers
 
-Upload notes (PDF / text)
+- Register as **Teacher** and log in to a dedicated dashboard.
+- Create and manage **courses**.
+- Upload lecture videos / materials (stored under `courses/`).
+- AI-powered generation of:
+  - ✅ Quizzes  
+  - ✅ Assignments  
+  - ✅ Question papers  
+- Share content with all registered students (same platform).
 
-Generate:
+---
 
-✅ MCQs
+## 🏗️ Tech Stack
 
-✅ Short answer questions
+- **Backend:** Flask, Flask-Login
+- **AI Model:** Google Generative AI (Gemini – `gemini-1.5-flash`)
+- **Auth & Security:**  
+  - `flask_login` for login/session management  
+  - `werkzeug.security` for password hashing
+- **Storage:**
+  - JSON files in `data/` (`users.json`, `courses.json`)
+  - Uploaded course videos in `courses/`
+- **Frontend:** HTML templates (Jinja2) + JavaScript
 
-✅ Long answer / theory questions
+---
 
-Difficulty selection: Easy / Medium / Hard
+## 📁 Project Structure
 
-Quiz mode with timer
-
-Practice unlimited times
-
-Performance tracking & revision support
-
-👨‍🏫 For Teachers
-
-Create courses & subjects
-
-Upload lecture notes / slides
-
-Auto-generate:
-
-Quizzes
-
-Assignments
-
-Question papers
-
-Share quizzes via link or code
-
-Analyze student performance
+```bash
+Note2Quiz-Turn-Notes-Into-Smart-Questions/
+├── chat.py               # Main Flask application
+├── data/
+│   ├── users.json        # User credentials & roles (JSON)
+│   └── courses.json      # Course metadata (JSON)
+├── templates/            # HTML templates (index, login, dashboard, etc.)
+├── js/                   # Frontend JavaScript files
+├── courses/              # Uploaded course videos (created at runtime)
+├── LICENSE               # MIT License
+└── README.md             # Project documentation
