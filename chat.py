@@ -7,7 +7,7 @@ import os
 import json
 
 # Configure Gemini API
-genai.configure(api_key="AIzaSyC7WUCv_Um6uOHjGSWEMD3-M6mZQ_KllVI")  # Replace with your actual API key
+genai.configure(api_key="Enter your API KEY")  # Replace with your actual API key
 
 # Initialize the app
 app = Flask(__name__)
