@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="text-center py-20 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 text-white dark:from-gray-800 dark:via-gray-900 dark:to-black">
+    <h1 class="text-5xl font-extrabold mb-4 animate-fade-in-down">Welcome to Course Website</h1>
+    <p class="text-lg mb-6 animate-fade-in-up">Learn, explore, and generate exam-style questions with AI.</p>
+    <button class="bg-white text-blue-700 font-semibold px-8 py-3 rounded-full shadow hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition" onclick="openChatbotModal()">
+        🚀 START LEARNING
+    </button>
+</section>
+
+<!-- Courses Section -->
+<section id="course-list" class="py-16 bg-gray-100 dark:bg-gray-800 px-6">
+    <h2 class="text-4xl font-bold text-center mb-10 text-gray-800 dark:text-white">📚 Available Courses</h2>
+    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for course in courses %}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-1 hover:shadow-xl transition duration-300">
+            <div class="p-5">
+                <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-2">{{ course.title }}</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">{{ course.description[:80] }}...</p>
+                <video class="w-full rounded-lg mb-3" controls>
+                    <source src="{{ url_for('get_video', course_id=course.id) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded w-full hover:bg-indigo-700 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition"
+                    onclick="showCourseModal('{{ course.title | escape }}', '{{ course.description | escape }}')">
+                    📥 Enroll Now
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Course Detail Modal -->
+<div id="courseModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl shadow-2xl w-full max-w-xl p-6 animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <h2 id="modalTitle" class="text-2xl font-bold text-center text-blue-700 dark:text-blue-400 mb-4">Course Title</h2>
+        <p id="modalDescription" class="text-gray-700 dark:text-gray-300 mb-4">Course description goes here...</p>
+        <video id="modalVideo" class="w-full rounded-lg mb-4" controls>
+            <source src="" type="video/mp4">
+        </video>
+        <button onclick="closeCourseModal()" class="mt-3 bg-red-500 text-white px-4 py-2 rounded w-full hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 transition">
+            ❌ Close
+        </button>
+    </div>
+</div>
+
+<!-- Floating Chatbot Button -->
+<button onclick="openChatbotModal()"
+    class="fixed bottom-5 right-5 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition duration-300 z-50">
+    🤖
+</button>
+
+<!-- Chatbot Modal -->
+<div id="chatbotModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-400 mb-4">📝 Upload Your Notes</h2>
+
+        <input type="file" id="textFileInput" accept=".txt" class="mb-4 w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+
+        <label for="numQuestions" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Number of Questions:</label>
+        <input type="number" id="numQuestions" min="1" max="50" value="5" class="mb-4 w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+
+        <button onclick="uploadAndGenerateQuestions()" class="bg-green-500 text-white px-4 py-2 rounded w-full font-semibold hover:bg-green-600 dark:bg-green-700 dark:hover:bg-green-600 transition">
+            ✨ Generate Questions
+        </button>
+
+        <div id="questionOutput" class="mt-4 text-sm whitespace-pre-wrap bg-gray-100 dark:bg-gray-700 p-3 rounded max-h-64 overflow-y-auto text-gray-800 dark:text-white"></div>
+
+        <button onclick="downloadQuestions()" class="mt-3 bg-blue-600 text-white px-3 py-2 rounded w-full text-sm hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 transition">
+            ⬇️ Download Questions
+        </button>
+        <button onclick="closeChatbotModal()" class="mt-4 text-red-500 hover:underline w-full text-sm">Close</button>
+    </div>
+</div>
+
+<script>
+    function openChatbotModal() {
+        document.getElementById('chatbotModal').classList.remove('hidden');
+    }
+
+    function closeChatbotModal() {
+        document.getElementById('chatbotModal').classList.add('hidden');
+    }
+
+    function uploadAndGenerateQuestions() {
+        const fileInput = document.getElementById('textFileInput');
+        const outputDiv = document.getElementById('questionOutput');
+        const numQuestions = parseInt(document.getElementById('numQuestions').value);
+
+        if (!fileInput.files.length) {
+            alert("Please select a text file first!");
+            return;
+        }
+
+        if (!numQuestions || numQuestions <= 0) {
+            alert("Please enter a valid number of questions.");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = async function (event) {
+            const text = event.target.result;
+            outputDiv.innerHTML = "<p class='text-gray-500 dark:text-gray-300'>Generating questions using AI...</p>";
+
+            try {
+                const response = await fetch('/generate-questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, num_questions: numQuestions })
+                });
+
+                const data = await response.json();
+
+                if (data.questions) {
+                    outputDiv.innerHTML = "<h3 class='text-md font-semibold mb-2'>Generated Questions:</h3>" +
+                        "<pre class='whitespace-pre-wrap'>" + data.questions + "</pre>";
+                } else {
+                    outputDiv.innerHTML = "<p class='text-red-500'>Error: " + data.error + "</p>";
+                }
+            } catch (err) {
+                outputDiv.innerHTML = "<p class='text-red-500'>Error: " + err.message + "</p>";
+            }
+        };
+
+        reader.readAsText(file);
+    }
+
+    function downloadQuestions() {
+        const outputDiv = document.getElementById('questionOutput');
+        const text = outputDiv.innerText;
+
+        const blob = new Blob([text], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.download = 'generated_questions.txt';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+    }
+
+    function showCourseModal(title, description, videoSrc) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDescription').innerText = description;
+        document.getElementById('modalVideo').querySelector('source').src = videoSrc;
+        document.getElementById('modalVideo').load();
+        document.getElementById('courseModal').classList.remove('hidden');
+    }
+
+    function closeCourseModal() {
+        document.getElementById('courseModal').classList.add('hidden');
+    }
+</script>
+{% endblock %}
