@@ -1,0 +1,4 @@
+[{"id": 1, "title": "JAVA Full Course", "description": "Description of Course 1", "video_url": "https://youtu.be/UmnCZ7-9yDY?si=orqLZByn-nejcRkg", "teacher_id": 1}, 
+{"id": 2, "title": "Course 2", "description": "Description of Course 2", "video_path": "https://www.example.com/courses/course2/video1.mp4", "teacher_id": 1}, 
+{"id": 3, "title": "v1", "description": "v1 testing video", "video_path": "/Users/rakesh/Documents/SS copy/Courses/v1.mp4", "teacher_id": 3}, 
+{"id": 4, "title": "hello", "description": "hello testing couses", "video_path": "courses/Morning_2D_Animation_Short.mp4", "teacher_id": 6}]
